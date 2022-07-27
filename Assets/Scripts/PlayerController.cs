@@ -11,13 +11,13 @@ public class PlayerController : MonoBehaviour
     [Header("Movement variables")]
     [SerializeField] float movementSpeed;
 
+    [Space(10), Header("Remapable buttons")]
+    [SerializeField] KeyCode switchPespective;
+    
     public static PerspectiveType perspectiveType;
     static bool canSwitchPerspective = false;
 
     Rigidbody rb;
-
-    [Space(10), Header("Remapable buttons")]
-    [SerializeField] KeyCode switchPespective;
 
     #endregion
 
