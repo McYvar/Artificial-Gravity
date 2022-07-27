@@ -4,16 +4,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PhysicsObject : MonoBehaviour
 {
-    #region
-    // Variables
-    public List<PhysicsObject> physicsObject = new List<PhysicsObject>();
+    #region Variables
+    [SerializeField] bool useRotation;
+    [SerializeField] bool useGravity = true;
 
-    //float gravitationalConst = 6.674f * Mathf.Pow(10, -11);
-    float gravitationalConst = 1;
+    public List<PhysicsObject> physicsObject = new List<PhysicsObject>();
 
     Rigidbody rb;
 
-    [SerializeField] bool useRotation;
     Vector3 gravityDirection;
     #endregion
 
@@ -43,6 +41,7 @@ public class PhysicsObject : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (useGravity)
         rb.AddForce(gravityDirection);
     }
 
@@ -54,7 +53,7 @@ public class PhysicsObject : MonoBehaviour
         {
             foreach (PhysicsObject obj in physicsObject)
             {
-                gravityDirection += gravitationalConst * (rb.mass * obj.rb.mass) / Mathf.Pow(Vector3.Distance(obj.transform.position, transform.position), 2) * (obj.transform.position - transform.position).normalized;
+                gravityDirection += (rb.mass * obj.rb.mass) / Mathf.Pow(Vector3.Distance(obj.transform.position, transform.position), 2) * (obj.transform.position - transform.position).normalized;
             }
         }
 
