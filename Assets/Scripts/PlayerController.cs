@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody rb;
     [SerializeField] Transform orientation;
+    [SerializeField] Transform playerCamera;
     [SerializeField] Transform cameraCenter;
 
     #endregion
@@ -43,6 +44,8 @@ public class PlayerController : MonoBehaviour
 
             case PerspectiveType._3D:
                 //rb.AddForce(orientation.forward * movementSpeed * Input.GetAxis("Vertical"), ForceMode.VelocityChange);
+                Vector3 cameraDirectionVector = (transform.position + (cameraCenter.position - playerCamera.position)).normalized;
+                Debug.DrawLine(transform.position, transform.position + cameraDirectionVector);
                 break;
         }
 
