@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] Vector3 angle;
     [SerializeField] Transform cameraCenter;
     [SerializeField] Transform player;
+    [SerializeField] float sensitivity = 1;
 
     #endregion
 
@@ -32,8 +33,8 @@ public class CameraController : MonoBehaviour
                 cameraCenter.position = player.position;
                 float xRot = Input.GetAxisRaw("Mouse Y");
                 float yRot = Input.GetAxisRaw("Mouse X");
-                cameraCenter.Rotate(Vector3.right * xRot);
-                cameraCenter.Rotate(Vector3.up * yRot);
+                cameraCenter.Rotate(Vector3.right * xRot * sensitivity);
+                cameraCenter.Rotate(Vector3.up * yRot * sensitivity);
                 break;
         }
     }

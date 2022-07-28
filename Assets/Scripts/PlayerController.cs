@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     static bool canSwitchPerspective = false;
 
     Rigidbody rb;
+    [SerializeField] Transform orientation;
+    [SerializeField] Transform cameraCenter;
 
     #endregion
 
@@ -30,7 +32,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void Update()
+    void FixedUpdate()
     {
         switch (perspectiveType)
         {
@@ -40,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
 
             case PerspectiveType._3D:
-
+                //rb.AddForce(orientation.forward * movementSpeed * Input.GetAxis("Vertical"), ForceMode.VelocityChange);
                 break;
         }
 
