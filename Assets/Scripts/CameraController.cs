@@ -39,11 +39,11 @@ public class CameraController : MonoBehaviour
                 float xRot = Input.GetAxisRaw("Mouse Y") * sensitivity * Time.fixedDeltaTime;
                 float yRot = Input.GetAxisRaw("Mouse X") * sensitivity * Time.fixedDeltaTime;
 
-                yRotation += yRot;
-                xRotation -= xRot;
-                xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-                cameraCenter.localRotation = Quaternion.Euler(xRotation, yRotation, cameraCenter.localEulerAngles.z) * player.rotation;
+                //yRotation += yRot;
+                //xRotation -= xRot;
+                //xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+                //cameraCenter.localRotation = player.rotation;
+                cameraCenter.Rotate(xRot, yRot, 0);
                 break;
         }
     }
