@@ -5,19 +5,23 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     #region Variables
-    [SerializeField] Vector3 _3DPosition;
+    [SerializeField] float closeness;
     [SerializeField] Vector3 angle;
     [SerializeField] Transform cameraCenter;
     [SerializeField] Transform player;
+
     [SerializeField] float sensitivity = 1;
+    private float xRotation; // for camera and for orientation
+    private float yRotation; // for camera only
 
     #endregion
 
 
     void Start()
     {
-        transform.position = _3DPosition;
-        transform.rotation = Quaternion.Euler(angle);
+        cameraCenter.rotation = Quaternion.Euler(angle);
+        yRotation = cameraCenter.localEulerAngles.y;
+        xRotation = cameraCenter.localEulerAngles.x;
     }
 
 
@@ -30,11 +34,16 @@ public class CameraController : MonoBehaviour
                 break;
 
             case PerspectiveType._3D:
+                transform.position = transform.forward * -closeness;
                 cameraCenter.position = player.position;
-                float xRot = Input.GetAxisRaw("Mouse Y");
-                float yRot = Input.GetAxisRaw("Mouse X");
-                cameraCenter.Rotate(Vector3.right * xRot * sensitivity);
-                cameraCenter.Rotate(Vector3.up * yRot * sensitivity);
+                float xRot = Input.GetAxisRaw("Mouse Y") * sensitivity * Time.fixedDeltaTime;
+                float yRot = Input.GetAxisRaw("Mouse X") * sensitivity * Time.fixedDeltaTime;
+
+                yRotation += yRot;
+                xRotation -= xRot;
+                xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+                cameraCenter.localRotation = Quaternion.Euler(xRotation, yRotation, cameraCenter.localEulerAngles.z) * player.rotation;
                 break;
         }
     }

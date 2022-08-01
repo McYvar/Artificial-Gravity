@@ -44,8 +44,10 @@ public class PlayerController : MonoBehaviour
 
             case PerspectiveType._3D:
                 //rb.AddForce(orientation.forward * movementSpeed * Input.GetAxis("Vertical"), ForceMode.VelocityChange);
-                Vector3 cameraDirectionVector = (transform.position + (cameraCenter.position - playerCamera.position)).normalized;
-                Debug.DrawLine(transform.position, transform.position + cameraDirectionVector);
+                Vector3 cameraDirectionVector = (transform.position - playerCamera.position);
+                Vector3 cameraForwardNoXRot = Quaternion.Euler(0, cameraCenter.localEulerAngles.y, cameraCenter.localEulerAngles.z) * Vector3.forward;
+                Debug.DrawLine(transform.position, transform.position + transform.rotation * cameraForwardNoXRot);
+                Debug.DrawLine(playerCamera.position, transform.position);
                 break;
         }
 
