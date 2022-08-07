@@ -4,12 +4,14 @@ using UnityEngine;
 
 public enum PerspectiveType { _2D, _3D }
 
+[SelectionBase]
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     #region Variables
     [Header("Movement variables")]
     [SerializeField] float movementSpeed;
+    [SerializeField, Range(0f, 0.1f)] float rotationSpeed;
 
     [Space(10), Header("Remapable buttons")]
     [SerializeField] KeyCode switchPespective;
@@ -43,11 +45,28 @@ public class PlayerController : MonoBehaviour
 
 
             case PerspectiveType._3D:
-                //rb.AddForce(orientation.forward * movementSpeed * Input.GetAxis("Vertical"), ForceMode.VelocityChange);
-                Vector3 cameraDirectionVector = (transform.position - playerCamera.position);
                 Vector3 cameraForwardNoXRot = Quaternion.Euler(0, cameraCenter.localEulerAngles.y, cameraCenter.localEulerAngles.z) * Vector3.forward;
-                Debug.DrawLine(transform.position, transform.position + transform.rotation * cameraForwardNoXRot);
+                Vector3 targetDirection = transform.position + transform.rotation * cameraForwardNoXRot;
+                Debug.DrawLine(transform.position, targetDirection);
                 Debug.DrawLine(playerCamera.position, transform.position);
+
+                float dotX = Vector3.Dot(transform.right, targetDirection);
+                float offsetAngleX = Mathf.Acos(dotX) * Mathf.Rad2Deg;
+
+                float dotZ = Vector3.Dot(transform.forward, targetDirection);
+                float offsetAngleZ = Mathf.Acos(dotZ) * Mathf.Rad2Deg;
+                if (offsetAngleX > 90)
+                {
+                    offsetAngleZ *= -1;
+                }
+                Debug.Log(offsetAngleZ);
+
+                float verticalInput = Input.GetAxis("Vertical");
+                Debug.Log(verticalInput);
+                if (verticalInput != 0)
+                {
+                    orientation.transform.localRotation = Quaternion.Slerp(orientation.transform.localRotation, Quaternion.Euler(0, offsetAngleZ, 0), rotationSpeed);
+                }
                 break;
         }
 

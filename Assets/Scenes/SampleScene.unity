@@ -497,7 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd50f1c8e1eb1314d83f138de483c537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useRotation: 1
+  useRotation: 0
   rotationSpeed: 0.0209
   useGravity: 1
   physicsObject: []
@@ -611,6 +611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 1
+  rotationSpeed: 0.0309
   switchPespective: 114
   orientation: {fileID: 1768682505}
   playerCamera: {fileID: 557283140}
