@@ -34,12 +34,13 @@ public class CameraController : MonoBehaviour
                 break;
 
             case PerspectiveType._3D:
+                //cameraCenter.transform.position = player.transform.position;
                 transform.localPosition = Vector3.forward * -closeness;
                 float xRot = Input.GetAxisRaw("Mouse Y") * sensitivity * Time.fixedDeltaTime;
                 float yRot = Input.GetAxisRaw("Mouse X") * sensitivity * Time.fixedDeltaTime;
                 yRotation += yRot;
                 xRotation -= xRot;
-                xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+                xRotation = Mathf.Clamp(xRotation, -10f, 90f);
                 cameraCenter.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
                 break;
         }

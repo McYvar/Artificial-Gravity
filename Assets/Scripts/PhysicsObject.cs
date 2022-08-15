@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PhysicsType { point, directional };
+
 [RequireComponent(typeof(Rigidbody))]
 public class PhysicsObject : MonoBehaviour
 {
     #region Variables
-    [SerializeField] bool useRotation;
+    public PhysicsType physicsType;
+
+    bool useRotation;
     [Header("If we use rotation")]
     [SerializeField, Range(0f, 0.1f)] float rotationSpeed;
 
@@ -16,7 +20,11 @@ public class PhysicsObject : MonoBehaviour
     static PhysicsObject priorityObject;
     [SerializeField] bool canPrioritize = false;
 
-    Material thisMaterial;
+    [Space(25), Header("In case of directional graviy")]
+    [SerializeField] Vector3 gravityFieldPointA;
+    [SerializeField] Vector3 gravityFieldPointB;
+    Vector3 gravityField;
+    [SerializeField] float gravityStrength;
 
     Rigidbody rb;
 
@@ -51,7 +59,7 @@ public class PhysicsObject : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        //thisMaterial.CopyPropertiesFromMaterial(GetComponent<MeshRenderer>().material);
+        gravityField = transform.rotation * ((transform.position + gravityFieldPointB) - (transform.position + gravityFieldPointA));
     }
 
 
@@ -69,7 +77,6 @@ public class PhysicsObject : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(gravityDirection) * Quaternion.Euler(-90, 0, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed);
         }
-
         gravityDirection = Vector3.zero;
         if (priorityObject != null)
         {
@@ -79,7 +86,16 @@ public class PhysicsObject : MonoBehaviour
         {
             foreach (PhysicsObject obj in physicsObject)
             {
-                gravityDirection += gravityFormula(obj);
+                switch (obj.physicsType)
+                {
+                    case PhysicsType.point:
+                        gravityDirection += gravityFormula(obj);
+                        break;
+
+                    case PhysicsType.directional:
+
+                        break;
+                }
             }
         }
 
@@ -96,9 +112,8 @@ public class PhysicsObject : MonoBehaviour
 
     Vector3 gravityFormula(PhysicsObject obj)
     {
-        return (rb.mass * obj.rb.mass) / Mathf.Pow(Vector3.Distance(obj.transform.position, transform.position), 2) * (obj.transform.position - transform.position).normalized;
+        return rb.mass * obj.rb.mass / Mathf.Pow(Vector3.Distance(obj.transform.position, transform.position), 2) * (obj.transform.position - transform.position).normalized;
     }
-
 
     private void OnDrawGizmos()
     {
@@ -132,4 +147,26 @@ public class PhysicsObject : MonoBehaviour
         }
     }
 
+
+    private void OnDrawGizmosSelected()
+    {
+        switch (physicsType)
+        {
+            case PhysicsType.point:
+                break;
+            case PhysicsType.directional:
+                Gizmos.color = new Color(0, 0, 1f, 1f);
+                Vector3 A = transform.rotation * (transform.position + gravityFieldPointA);
+                Vector3 B = transform.rotation * (transform.position + gravityFieldPointB);
+                Vector3 Center = A + (B - A) / 2;
+                Vector3 Size = B - A;
+                Gizmos.DrawSphere(A, 0.3f);
+                Gizmos.DrawSphere(B, 0.3f);
+                Gizmos.DrawLine(A, B);
+                Gizmos.DrawSphere(Center, 0.3f);
+                Gizmos.color = new Color(0f, 0f, 0f, 0.4f);
+                Gizmos.DrawCube(Center, Size);
+                break;
+        }
+    }
 }

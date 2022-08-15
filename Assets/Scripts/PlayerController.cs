@@ -45,27 +45,26 @@ public class PlayerController : MonoBehaviour
 
 
             case PerspectiveType._3D:
-                Vector3 cameraForwardNoXRot = Quaternion.Euler(0, cameraCenter.localEulerAngles.y, cameraCenter.localEulerAngles.z) * Vector3.forward;
-                Vector3 targetDirection = transform.position + transform.rotation * cameraForwardNoXRot;
-                Debug.DrawLine(transform.position, targetDirection);
-                Debug.DrawLine(playerCamera.position, transform.position);
-
-                float dotX = Vector3.Dot(transform.right, targetDirection);
-                float offsetAngleX = Mathf.Acos(dotX) * Mathf.Rad2Deg;
-
-                float dotZ = Vector3.Dot(transform.forward, targetDirection);
-                float offsetAngleZ = Mathf.Acos(dotZ) * Mathf.Rad2Deg;
-                if (offsetAngleX > 90)
-                {
-                    offsetAngleZ *= -1;
-                }
-                Debug.Log(offsetAngleZ);
-
                 float verticalInput = Input.GetAxis("Vertical");
-                Debug.Log(verticalInput);
                 if (verticalInput != 0)
                 {
+                    Vector3 cameraForwardNoXRot = Quaternion.Euler(0, cameraCenter.localEulerAngles.y, cameraCenter.localEulerAngles.z) * Vector3.forward;
+                    Vector3 targetDirection = transform.rotation * cameraForwardNoXRot;
+
+                    float dotX = Vector3.Dot(transform.right, targetDirection);
+                    float offsetAngleX = Mathf.Acos(dotX) * Mathf.Rad2Deg;
+
+                    float dotZ = Vector3.Dot(transform.forward, targetDirection);
+                    float offsetAngleZ = Mathf.Acos(dotZ) * Mathf.Rad2Deg;
+
+                    if (offsetAngleX > 90)
+                    {
+                        offsetAngleZ *= -1;
+                    }
+
                     orientation.transform.localRotation = Quaternion.Slerp(orientation.transform.localRotation, Quaternion.Euler(0, offsetAngleZ, 0), rotationSpeed);
+
+                    rb.AddForce(transform.forward * movementSpeed * verticalInput, ForceMode.VelocityChange);
                 }
                 break;
         }
